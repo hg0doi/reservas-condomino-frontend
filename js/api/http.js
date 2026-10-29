@@ -15,7 +15,17 @@ export async function request(path, options = {}) {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.mensaje || `Error ${response.status}`);
+    throw new Error(data.message || `Error ${response.status}`);
   }
   return data;
+}
+
+// Arma un query string ignorando valores vacíos: { a: 1, b: '' } -> "?a=1"
+export function qs(params = {}) {
+  const sp = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== '') sp.append(k, v);
+  });
+  const s = sp.toString();
+  return s ? `?${s}` : '';
 }
