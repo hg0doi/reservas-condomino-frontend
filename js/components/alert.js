@@ -1,7 +1,14 @@
+import { h, ic } from '../utils/dom.js';
+
+// Notificación flotante (toast). Usa textContent vía h(), no innerHTML (evita XSS).
 export function showAlert(mensaje, tipo = 'error') {
-  const el = document.getElementById('alert');
-  el.textContent = mensaje;          // textContent, no innerHTML (evita XSS)
-  el.className = `alert alert-${tipo}`;
-  el.hidden = false;
-  setTimeout(() => (el.hidden = true), 4000);
+  const cont = document.getElementById('toasts');
+  const toast = h('div', { class: `toast ${tipo}`, role: tipo === 'error' ? 'alert' : 'status' },
+    ic(tipo === 'error' ? 'alert' : 'checkCircle'),
+    h('span', {}, mensaje));
+  cont.append(toast);
+  setTimeout(() => {
+    toast.classList.add('leaving');
+    setTimeout(() => toast.remove(), 200);
+  }, 4000);
 }

@@ -3,58 +3,104 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reservas del Condominio</title>
+  <title>ReservaSpace · Reservas del Condominio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234f46e5'/><path d='M9 12h14v11H9z' fill='none' stroke='white' stroke-width='2.4' stroke-linejoin='round'/><path d='M12 9v5M20 9v5' stroke='white' stroke-width='2.4' stroke-linecap='round'/></svg>" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
 </head>
 <body>
-  <header class="app-header"><h1>Reserva de Espacios</h1></header>
-
-  <main class="container">
-    <div id="alert" role="alert" hidden></div>
-
-    <section class="card" aria-labelledby="form-title">
-      <h2 id="form-title">Nueva reserva</h2>
-      <form id="reserva-form" novalidate>
-        <input type="hidden" id="reserva-id" />
-        <label>Residente
-          <select id="residente_id" required></select>
-        </label>
-        <label>Espacio
-          <select id="espacio_id" required></select>
-        </label>
-        <label>Fecha
-          <input type="date" id="fecha" required />
-        </label>
-        <label>Hora inicio
-          <input type="time" id="hora_inicio" required />
-        </label>
-        <label>Hora fin
-          <input type="time" id="hora_fin" required />
-        </label>
-        <label>Notas
-          <input type="text" id="notas" maxlength="255" />
-        </label>
-        <div class="actions">
-          <button type="submit" id="btn-guardar">Reservar</button>
-          <button type="button" id="btn-cancelar" hidden>Cancelar edición</button>
-        </div>
-      </form>
-    </section>
-
-    <section class="card" aria-labelledby="list-title">
-      <h2 id="list-title">Reservas registradas</h2>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr><th>Espacio</th><th>Residente</th><th>Fecha</th><th>Horario</th><th>Acciones</th></tr>
-          </thead>
-          <tbody id="reservas-body"></tbody>
-        </table>
+  <!-- ===== Login ===== -->
+  <section id="login-screen" class="login" hidden>
+    <div class="login-hero">
+      <div class="brand brand-lg">
+        <span class="brand-logo" data-icon="calendar"></span>
+        <span>ReservaSpace</span>
       </div>
-    </section>
-  </main>
+      <h1>Gestiona los espacios de tu condominio sin choques de horario.</h1>
+      <p>Reserva salas, canchas y auditorios, revisa la disponibilidad en tiempo real y lleva el control de cada reserva desde un solo lugar.</p>
+      <ul class="hero-points">
+        <li><span data-icon="check"></span>Verificación de disponibilidad al instante</li>
+        <li><span data-icon="check"></span>Estados: pendiente, confirmada, cancelada y completada</li>
+        <li><span data-icon="check"></span>Datos en vivo desde Azure MySQL</li>
+      </ul>
+    </div>
+    <div class="login-panel">
+      <form id="login-form" class="login-card" novalidate>
+        <h2>Iniciar sesión</h2>
+        <p class="muted">Ingresa con tu cuenta de administrador.</p>
+        <label class="field">Correo
+          <input type="email" id="login-correo" autocomplete="username" placeholder="admin@test.com" required />
+        </label>
+        <label class="field">Contraseña
+          <input type="password" id="login-password" autocomplete="current-password" placeholder="••••••" required />
+        </label>
+        <p id="login-error" class="form-error" hidden></p>
+        <button type="submit" class="btn btn-primary btn-block" id="login-btn">Entrar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== App ===== -->
+  <div id="app" class="app" hidden>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <span class="brand-logo" data-icon="calendar"></span>
+        <span>ReservaSpace</span>
+      </div>
+      <nav class="nav" aria-label="Principal">
+        <a href="#/dashboard" data-route="dashboard"><span data-icon="grid"></span>Dashboard</a>
+        <a href="#/reservas" data-route="reservas"><span data-icon="calendar"></span>Reservas</a>
+        <a href="#/espacios" data-route="espacios"><span data-icon="building"></span>Espacios</a>
+        <p class="nav-section">Catálogos</p>
+        <a href="#/tipos" data-route="tipos"><span data-icon="tag"></span>Tipos de espacio</a>
+        <a href="#/estados" data-route="estados"><span data-icon="flag"></span>Estados</a>
+        <a href="#/usuarios" data-route="usuarios"><span data-icon="users"></span>Usuarios</a>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="user-chip">
+          <span class="avatar" id="user-avatar">A</span>
+          <div>
+            <strong id="user-name">Usuario</strong>
+            <small id="user-mail" class="muted"></small>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-block" id="logout-btn"><span data-icon="logout"></span>Cerrar sesión</button>
+      </div>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Abrir menú"><span data-icon="menu"></span></button>
+        <div class="topbar-title">
+          <h1 id="page-title">Dashboard</h1>
+          <p id="page-subtitle" class="muted"></p>
+        </div>
+        <div class="topbar-actions">
+          <span class="api-status" id="api-status" title="Estado de la API"><span class="dot"></span><span class="label">Conectando…</span></span>
+          <button type="button" class="icon-btn" id="theme-btn" aria-label="Cambiar tema"><span data-icon="moon"></span></button>
+        </div>
+      </header>
+      <main id="view" class="view" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <!-- ===== Modal y notificaciones ===== -->
+  <dialog id="modal" class="modal">
+    <form method="dialog" class="modal-inner" id="modal-form" novalidate>
+      <header class="modal-head">
+        <h2 id="modal-title">Título</h2>
+        <button type="button" class="icon-btn" id="modal-close" aria-label="Cerrar"><span data-icon="x"></span></button>
+      </header>
+      <div class="modal-body" id="modal-body"></div>
+      <footer class="modal-foot" id="modal-foot"></footer>
+    </form>
+  </dialog>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
 
   <script type="module" src="js/main.js"></script>
 </body>

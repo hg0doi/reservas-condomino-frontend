@@ -1,0 +1,139 @@
+/* ===== Login ===== */
+.login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+}
+
+.login-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.25rem;
+  color: #fff;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(124, 116, 255, .55), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(56, 189, 248, .35), transparent 45%),
+    linear-gradient(135deg, #1e1b4b, #11142b);
+}
+.login-hero h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; max-width: 22ch; }
+.login-hero p { color: #c7cbe6; max-width: 46ch; font-size: 1.05rem; }
+
+.hero-points { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; gap: .7rem; }
+.hero-points li { display: flex; align-items: center; gap: .6rem; color: #e3e5f7; }
+.hero-points [data-icon] {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(255, 255, 255, .14); color: #a5f3c9;
+}
+
+.login-panel { display: grid; place-items: center; padding: 2rem 1.25rem; background: var(--bg); }
+
+.login-card {
+  width: min(400px, 100%);
+  display: grid;
+  gap: 1rem;
+  padding: 2.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.login-card h2 { font-size: 1.5rem; }
+
+/* ===== Marca ===== */
+.brand { display: flex; align-items: center; gap: .6rem; font-weight: 800; font-size: 1.15rem; color: #fff; }
+.brand-logo {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: linear-gradient(135deg, #7c74ff, #4f46e5);
+  box-shadow: 0 6px 16px -4px rgba(79, 70, 229, .7);
+}
+.brand-lg { font-size: 1.35rem; }
+.brand-lg .brand-logo { width: 42px; height: 42px; }
+
+/* ===== Estructura de la app ===== */
+.app { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  padding: 1.5rem 1rem;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+}
+.sidebar .brand { padding: 0 .5rem; }
+
+.nav { display: grid; gap: .2rem; }
+.nav a {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .65rem .8rem;
+  border-radius: 10px;
+  color: var(--sidebar-text);
+  font-weight: 500;
+  transition: background .15s, color .15s;
+}
+.nav a:hover { background: rgba(255, 255, 255, .06); color: #fff; }
+.nav a.active { background: linear-gradient(90deg, rgba(124, 116, 255, .28), rgba(124, 116, 255, .08)); color: var(--sidebar-active); }
+.nav a.active [data-icon] { color: #a5a0ff; }
+.nav-section {
+  margin: 1rem .8rem .3rem;
+  font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: #6b7194;
+}
+
+.sidebar-foot { margin-top: auto; display: grid; gap: .75rem; }
+.user-chip {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .7rem; border-radius: 12px; background: rgba(255, 255, 255, .05);
+}
+.user-chip strong { display: block; color: #fff; font-size: .92rem; }
+.user-chip small { display: block; font-size: .78rem; color: var(--sidebar-text); overflow-wrap: anywhere; }
+.sidebar .btn-ghost { color: var(--sidebar-text); border-color: rgba(255, 255, 255, .1); }
+.sidebar .btn-ghost:hover { background: rgba(255, 255, 255, .06); color: #fff; }
+
+.main { min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.1rem 2rem;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar h1 { font-size: 1.4rem; font-weight: 800; }
+.topbar-title { min-width: 0; }
+.topbar-actions { margin-left: auto; display: flex; align-items: center; gap: .6rem; }
+.icon-btn.menu-btn { display: none; }
+
+.view { padding: 1.75rem 2rem 3rem; display: grid; gap: 1.5rem; align-content: start; outline: none; }
+
+.sidebar-backdrop { display: none; }
+
+/* ===== Responsive ===== */
+@media (max-width: 960px) {
+  .login { grid-template-columns: 1fr; }
+  .login-hero { padding: 2.5rem 1.5rem; }
+
+  .app { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed; z-index: 40; left: 0;
+    width: 270px;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+  }
+  .app.nav-open .sidebar { transform: none; }
+  .app.nav-open .sidebar-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 30; background: rgba(10, 12, 24, .5);
+  }
+  .icon-btn.menu-btn { display: inline-flex; }
+  .topbar { padding: .9rem 1rem; }
+  .view { padding: 1.25rem 1rem 2.5rem; }
+  .api-status .label { display: none; }
+}
